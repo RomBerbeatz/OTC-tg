@@ -1,0 +1,81 @@
+/* Основные стили */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #f8f9fa;
+}
+
+.listing-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.listing-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.price {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #28a745;
+}
+
+.category-section {
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 2rem;
+}
+
+.category-section h3 {
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+/* Telegram WebApp стили */
+.telegram-webapp {
+    --tg-theme-bg-color: var(--tg-color-scheme-bg-color, #ffffff);
+    --tg-theme-text-color: var(--tg-color-scheme-text-color, #000000);
+    --tg-theme-hint-color: var(--tg-color-scheme-hint-color, #999999);
+    --tg-theme-link-color: var(--tg-color-scheme-link-color, #2481cc);
+    --tg-theme-button-color: var(--tg-color-scheme-button-color, #2481cc);
+    --tg-theme-button-text-color: var(--tg-color-scheme-button-text-color, #ffffff);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .listing-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.listing-card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Кастомные элементы */
+.contact-form {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.seller-info {
+    background: #e9ecef;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.rating {
+    color: #ffc107;
+}

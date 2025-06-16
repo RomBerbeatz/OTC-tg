@@ -1,0 +1,5 @@
+aiogram==3.4.1
+flask==2.3.3
+sqlalchemy==1.4.53
+python-dotenv==1.0.0
+aiohttp==3.8.6

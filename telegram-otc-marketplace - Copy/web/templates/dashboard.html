@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой профиль - OTC Marketplace</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --tg-theme-bg-color: #f8f9fa;
+            --tg-theme-text-color: #000000;
+            --tg-theme-button-color: #2481cc;
+        }
+        
+        body {
+            background-color: var(--tg-theme-bg-color);
+            color: var(--tg-theme-text-color);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .navbar {
+            background: white !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-bottom: 1px solid #eee;
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--tg-theme-button-color) !important;
+        }
+        
+        .stats-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .listing-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: transform 0.2s;
+            margin-bottom: 1rem;
+        }
+        
+        .listing-card:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary {
+            background: var(--tg-theme-button-color);
+            border: none;
+            border-radius: 10px;
+        }
+        
+        .btn-primary:hover {
+            background: #1a6bb8;
+        }
+        
+        .welcome-section {
+            background: linear-gradient(135deg, var(--tg-theme-button-color), #764ba2);
+            color: white;
+            padding: 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+        }
+        
+        .quick-actions {
+            margin-bottom: 2rem;
+        }
+        
+        .action-btn {
+            border: none;
+            border-radius: 15px;
+            padding: 1rem;
+            margin: 0.5rem;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.2s;
+            text-decoration: none;
+            color: #333;
+            display: inline-block;
+            min-width: 150px;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            color: #333;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <!-- Навигация без кнопки "Выйти" -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                🏪 OTC Marketplace
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3">
+                    👋 {{ user.first_name }}
+                </span>
+                <a href="/" class="nav-link">
+                    <i class="bi bi-house"></i> На главную
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Приветствие -->
+        <div class="welcome-section">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">Мой профиль 👋</h1>
+                    <p class="mb-0">Добро пожаловать, {{ user.first_name }}! Управляйте своими объявлениями и сделками</p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="badge bg-white text-dark fs-6 p-2">
+                        🆔 ID: {{ user.id }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Быстрые действия -->
+        <div class="quick-actions">
+            <h5 class="mb-3">⚡ Быстрые действия</h5>
+            <div class="row text-center">
+                <div class="col-md-3">
+                    <a href="/create" class="action-btn">
+                        <i class="bi bi-plus-circle fs-1 text-success"></i>
+                        <div class="mt-2">
+                            <strong>Создать объявление</strong>
+                            <br><small>Продать товар</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="/messages" class="action-btn">
+                        <i class="bi bi-chat-dots fs-1 text-primary"></i>
+                        <div class="mt-2">
+                            <strong>Сообщения</strong>
+                            <br><small>{{ messages|length }} новых</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="#" class="action-btn">
+                        <i class="bi bi-person-circle fs-1 text-info"></i>
+                        <div class="mt-2">
+                            <strong>Настройки</strong>
+                            <br><small>Профиль</small>
+                        </div>
+                    </a>
+                </div>
+                <div class="col-md-3">
+                    <a href="/" class="action-btn">
+                        <i class="bi bi-shop fs-1 text-warning"></i>
+                        <div class="mt-2">
+                            <strong>Площадка</strong>
+                            <br><small>Все объявления</small>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ИСПРАВЛЕННАЯ статистика -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card stats-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-list-ul fs-1 text-primary"></i>
+                        <h3 class="mt-2">{{ listings|length }}</h3>
+                        <p class="text-muted mb-0">Мои объявления</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-eye fs-1 text-success"></i>
+                        <h3 class="mt-2">{{ listings|sum(attribute='views')|int }}</h3>
+                        <p class="text-muted mb-0">Просмотров</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-chat-dots fs-1 text-info"></i>
+                        <h3 class="mt-2">{{ messages|length }}</h3>
+                        <p class="text-muted mb-0">Сообщений</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card text-center">
+                    <div class="card-body">
+                        <i class="bi bi-currency-dollar fs-1 text-warning"></i>
+                        <h3 class="mt-2">
+                            <!-- ИСПРАВЛЕНО: убрана неправильная логика конвертации -->
+                            {% set ns = namespace(total=0) %}
+                            {% for listing in listings %}
+                                {% set ns.total = ns.total + listing.price %}
+                            {% endfor %}
+                            ${{ "%.1f"|format(ns.total) }}
+                        </h3>
+                        <p class="text-muted mb-0">Общая стоимость</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Мои объявления -->
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5>📋 Мои объявления</h5>
+                    <a href="/create" class="btn btn-primary">
+                        <i class="bi bi-plus"></i> Создать новое
+                    </a>
+                </div>
+
+                {% if listings %}
+                    <div class="row">
+                        {% for listing in listings %}
+                        <div class="col-md-6 col-lg-4 mb-3">
+                            <div class="card listing-card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <span class="badge bg-primary">
+                                            {% if listing.category == 'channel' %}📢 КАНАЛ
+                                            {% elif listing.category == 'account' %}👤 АККАУНТ
+                                            {% else %}🎁 ДРУГОЕ
+                                            {% endif %}
+                                        </span>
+                                        <small class="text-muted">{{ listing.created_at[:10] }}</small>
+                                    </div>
+                                    
+                                    <h6 class="card-title">{{ listing.title }}</h6>
+                                    <p class="card-text text-muted">{{ listing.description[:100] }}{% if listing.description|length > 100 %}...{% endif %}</p>
+                                    
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <!-- ИСПРАВЛЕНО: убрана неправильная логика, используем цену как есть -->
+                                        <span class="h5 text-success mb-0">
+                                            ${{ "%.1f"|format(listing.price) }}
+                                        </span>
+                                        <span class="badge bg-{{ 'success' if listing.status == 'active' else 'secondary' }}">
+                                            {{ '✅ Активно' if listing.status == 'active' else '⏸️ Неактивно' }}
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- ДОБАВЛЕНО: статистика с количеством сообщений -->
+                                    <div class="row text-center mb-3">
+                                        <div class="col-4">
+                                            <small class="text-muted">Просмотров</small>
+                                            <div class="fw-bold">{{ listing.views or 0 }}</div>
+                                        </div>
+                                        <div class="col-4">
+                                            <small class="text-muted">Сообщений</small>
+                                            <div class="fw-bold">
+                                                <!-- Подсчитываем сообщения для данного объявления -->
+                                                {% set listing_messages = messages|selectattr('listing_id', 'equalto', listing.id)|list %}
+                                                {{ listing_messages|length }}
+                                            </div>
+                                        </div>
+                                        <div class="col-4">
+                                            {% if listing.subscribers_count and listing.subscribers_count > 0 %}
+                                            <small class="text-muted">Подписчиков</small>
+                                            <div class="fw-bold">{{ '{:,}'.format(listing.subscribers_count).replace(',', ' ') }}</div>
+                                            {% else %}
+                                            <small class="text-muted">ID</small>
+                                            <div class="fw-bold">#{{ listing.id }}</div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- ИСПРАВЛЕНО: убрана кнопка "Статистика" -->
+                                <div class="card-footer bg-transparent">
+                                    <div class="btn-group w-100" role="group">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" onclick="editListing({{ listing.id }})">
+                                            <i class="bi bi-pencil"></i> Изменить
+                                        </button>
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteListing({{ listing.id }}, '{{ listing.title|replace("'", "\\'") }}')">
+                                            <i class="bi bi-trash"></i> Удалить
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <i class="bi bi-inbox display-1 text-muted"></i>
+                        <h4>У вас пока нет объявлений</h4>
+                        <p>Создайте первое объявление и начните продавать!</p>
+                        <a href="/create" class="btn btn-primary btn-lg">
+                            <i class="bi bi-plus"></i> Создать объявление
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Последние сообщения -->
+        {% if messages %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5>💬 Последние сообщения</h5>
+                    <a href="/messages" class="btn btn-outline-primary">
+                        Все сообщения
+                    </a>
+                </div>
+
+                <div class="row">
+                    {% for message in messages[:3] %}
+                    <div class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <strong>{{ message.from_user_name }}</strong>
+                                    <small class="text-muted">{{ message.created_at[:10] }}</small>
+                                </div>
+                                <h6 class="card-subtitle mb-2 text-muted">{{ message.listing_title }}</h6>
+                                <p class="card-text">{{ message.message[:100] }}{% if message.message|length > 100 %}...{% endif %}</p>
+                                <span class="badge bg-{{ 'warning' if message.status == 'unread' else 'secondary' }}">
+                                    {{ 'Новое' if message.status == 'unread' else 'Прочитано' }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- ИСПРАВЛЕННАЯ активность пользователя - убрана "Последний вход" -->
+        <div class="row mt-4 mb-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">📊 Ваша активность</h5>
+                        <div class="row text-center">
+                            <div class="col-md-4">
+                                <div class="border rounded p-3">
+                                    <i class="bi bi-calendar-check fs-3 text-primary"></i>
+                                    <div class="mt-2">
+                                        <strong>Регистрация</strong>
+                                        <br><small class="text-muted">15 июня 2025</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border rounded p-3">
+                                    <i class="bi bi-star-fill fs-3 text-warning"></i>
+                                    <div class="mt-2">
+                                        <strong>Рейтинг</strong>
+                                        <br><small class="text-muted">5.0 ⭐</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="border rounded p-3">
+                                    <i class="bi bi-handshake fs-3 text-info"></i>
+                                    <div class="mt-2">
+                                        <strong>Сделки</strong>
+                                        <br><small class="text-muted">0 завершено</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно подтверждения удаления -->
+    <div class="modal fade" id="deleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">🗑️ Подтверждение удаления</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Вы уверены, что хотите удалить объявление?</p>
+                    <p class="fw-bold text-primary" id="deleteListingTitle"></p>
+                    <p class="text-muted">Это действие нельзя отменить.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x"></i> Отмена
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="bi bi-trash"></i> Удалить навсегда
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Telegram WebApp
+        let tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+            tg.ready();
+        }
+
+        console.log('👤 Профиль пользователя: RomBerbeatz');
+        console.log('📅 Текущее время: 2025-06-15 21:16:17 UTC');
+        console.log('✅ Дашборд обновлен - исправлены цены, убрана неправильная конвертация');
+
+        let listingToDelete = null;
+
+        // ИСПРАВЛЕНО: Дополнительное форматирование цен через JavaScript
+        document.addEventListener('DOMContentLoaded', function() {
+            // Находим все элементы с ценами и принудительно форматируем
+            document.querySelectorAll('.text-success').forEach(priceElement => {
+                const priceText = priceElement.textContent.replace('$', '');
+                const price = parseFloat(priceText);
+                if (!isNaN(price)) {
+                    priceElement.textContent = `$${price.toFixed(1)}`;
+                    console.log(`💰 Цена в объявлении обновлена: ${price} → $${price.toFixed(1)}`);
+                }
+            });
+            
+            // Форматируем общую стоимость в статистике
+            const totalPriceElement = document.querySelector('.bi-currency-dollar').closest('.card-body').querySelector('h3');
+            if (totalPriceElement) {
+                const totalText = totalPriceElement.textContent.replace('$', '');
+                const total = parseFloat(totalText);
+                if (!isNaN(total)) {
+                    totalPriceElement.textContent = `$${total.toFixed(1)}`;
+                    console.log(`💰 Общая стоимость обновлена: ${total} → $${total.toFixed(1)}`);
+                }
+            }
+            
+            // Плавное появление карточек
+            const cards = document.querySelectorAll('.stats-card, .listing-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.5s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 50);
+            });
+            
+            console.log('✨ Анимации и форматирование цен завершены');
+        });
+
+        // Редактирование объявления
+        function editListing(listingId) {
+            console.log('✏️ Редактирование объявления ID:', listingId);
+            
+            if (tg) {
+                tg.showAlert('Функция редактирования будет добавлена в следующем обновлении');
+            } else {
+                alert('Функция редактирования будет добавлена в следующем обновлении');
+            }
+        }
+
+        // Удаление объявления
+        function deleteListing(listingId, listingTitle) {
+            console.log('🗑️ Запрос на удаление объявления ID:', listingId, listingTitle);
+            
+            listingToDelete = listingId;
+            document.getElementById('deleteListingTitle').textContent = listingTitle;
+            new bootstrap.Modal(document.getElementById('deleteModal')).show();
+        }
+
+        // Подтверждение удаления
+        document.getElementById('confirmDeleteBtn').addEventListener('click', async function() {
+            if (!listingToDelete) return;
+            
+            const btn = this;
+            const originalText = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Удаление...';
+            
+            try {
+                const response = await fetch(`/api/listings/${listingToDelete}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    // Закрываем модальное окно
+                    bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
+                    
+                    // Уведомление
+                    if (tg) {
+                        tg.showAlert('✅ Объявление успешно удалено');
+                    } else {
+                        alert('✅ Объявление успешно удалено');
+                    }
+                    
+                    // Перезагружаем страницу
+                    setTimeout(() => location.reload(), 1000);
+                } else {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Ошибка удаления объявления');
+                }
+                
+            } catch (error) {
+                console.error('❌ Ошибка удаления:', error);
+                alert('❌ Ошибка удаления объявления: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                listingToDelete = null;
+            }
+        });
+    </script>
+</body>
+</html>
